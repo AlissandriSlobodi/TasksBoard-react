@@ -2,6 +2,7 @@
   "name": "tasks_manager",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://AlissandriSlobodi.github.io",
   "dependencies": {
     "@headlessui/react": "^1.7.13",
     "@reduxjs/toolkit": "^1.9.3",
