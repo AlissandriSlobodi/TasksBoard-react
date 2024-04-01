@@ -141,25 +141,33 @@ export const boardsSlice = createSlice({
       const newCol = columns.find((col, i) => i === payload.newColIndex);
       newCol.tasks.push(task);
     },
-    deleteTask: (state, action) => {
-      const payload = action.payload;
-      const board = state.find((board) => board.isActive);
-      const col = board.columns.find((col, i) => i === payload.colIndex);
-      // Преобразуйте дату в строку ISO перед удалением задачи
-      const task = col.tasks[payload.taskIndex];
-      const convertedDate = new Date(task.selectedDate).toISOString();
-      console.log(convertedDate);
-      col.tasks = col.tasks.filter((task, i) => i !== payload.taskIndex);
-      const currentTime = new Date().toISOString(); // Получаем текущее время в формате ISO
-      addToHistory({
-        type: "DELETE_TASK",
-        payload: {
-          ...action.payload,
-          taskTitle: task.title,
-          timestamp: currentTime,
-        },
-      });
+deleteTask: (state, action) => {
+  const payload = action.payload;
+  const board = state.find((board) => board.isActive);
+  const col = board.columns.find((col, i) => i === payload.colIndex);
+  const task = col.tasks[payload.taskIndex];
+
+  // Проверяем, является ли task.selectedDate допустимой датой
+  const date = new Date(task.selectedDate);
+  if (!isNaN(date.getTime())) {
+    const convertedDate = date.toISOString();
+    console.log(convertedDate);
+  } else {
+    console.error('Недопустимое значение даты: ', task.selectedDate);
+    // Можно выполнить дополнительные действия в случае недопустимой даты
+  }
+
+  col.tasks = col.tasks.filter((task, i) => i !== payload.taskIndex);
+  const currentTime = new Date().toISOString(); // Получаем текущее время в формате ISO
+  addToHistory({
+    type: "DELETE_TASK",
+    payload: {
+      ...action.payload,
+      taskTitle: task.title,
+      timestamp: currentTime,
     },
+  });
+},
   },
 });
 
